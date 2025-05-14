@@ -4,4 +4,4 @@ function formatingPerson(ourTuple: [string, number]): string{
     return `Hello, my name is ${name} and my age is ${age}`
 }
 
-formatingPerson(['Ivan', 20])
+formatingPerson(['Ste4fan', 20])

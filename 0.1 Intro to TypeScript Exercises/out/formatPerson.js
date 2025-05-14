@@ -4,5 +4,5 @@ function formatingPerson(ourTuple) {
     console.log(name);
     return `Hello, my name is ${name} and my age is ${age}`;
 }
-formatingPerson(['Ivan', 20]);
+formatingPerson(['Ste4fan', 20]);
 //# sourceMappingURL=formatPerson.js.map

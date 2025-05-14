@@ -1,16 +1,16 @@
-function calculateEven(a: number, b: number, c: number) {
-  let result: string;
+function calculateEven(a: number, b: number, c: number):boolean {
+ 
   let sum: number = 0;
   if (typeof a === "number" && typeof b === "number" && typeof c === "number") {
     sum = a + b + c;
   }
 
   if (sum % 2 === 0) {
-    return (result = "true");
+    return true
   } else {
-    return (result = "false");
+    return false
   }
 }
 
-console.log(calculateEven(1, 2, 3));
+console.log(calculateEven(2, 2, 3));
 

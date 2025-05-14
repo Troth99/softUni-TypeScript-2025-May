@@ -20,7 +20,7 @@ function movePoint(point: { x: number; y: number }, moveDirection: Directions) {
 let point = { x: 0, y: 0 };
 console.log(movePoint(point, Directions.Up));
 
-let printName: string = "Johhnynnynyny";
+let printName: string = "Johhnynnynyny21312";
 console.log(printName);
 
 function formatData(a: string | number, b: string | number) {
