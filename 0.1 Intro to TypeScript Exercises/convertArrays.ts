@@ -1,5 +1,5 @@
 
-function convertingArrays(arrayOfStr: string[]){
+function convertingArrays(arrayOfStr: string[]) :[string,number]{
 
     let concatName: string = ''
     

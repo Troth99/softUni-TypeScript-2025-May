@@ -18,5 +18,5 @@ function showCurrentDay(day) {
         console.log('error');
     }
 }
-showCurrentDay(5);
+showCurrentDay(1);
 //# sourceMappingURL=dayOfTheWeek.js.map
