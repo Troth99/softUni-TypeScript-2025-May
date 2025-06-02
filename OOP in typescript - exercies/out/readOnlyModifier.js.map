@@ -1,0 +1,1 @@
+{"version":3,"file":"readOnlyModifier.js","sourceRoot":"","sources":["../readOnlyModifier.ts"],"names":[],"mappings":";AAAA,MAAM,IAAI;IACG,KAAK,CAAS;IACd,MAAM,CAAS;IAExB,YAAY,SAAiB,EAAE,UAAkB;QAC7C,IAAI,CAAC,KAAK,GAAG,SAAS,CAAA;QACtB,IAAI,CAAC,MAAM,GAAG,UAAU,CAAA;IAC5B,CAAC;CACJ"}
