@@ -5,9 +5,9 @@ type Choose<T, K extends keyof T > = {
 
 
 
-type test = { 
-   name: string,
-   age: number,
-   test:() => string;
-}
-type extracted = Choose<test, 'name' | 'age'>
+// type test = { 
+//    name: string,
+//    age: number,
+//    test:() => string;
+// }
+// type extracted = Choose<test, 'name' | 'age'>
