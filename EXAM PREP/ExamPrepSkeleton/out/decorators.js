@@ -6,18 +6,15 @@ exports.decorator3 = decorator3;
 exports.decorator4 = decorator4;
 function decorator1(constructor) {
     return class extends constructor {
-        _offSet = 3;
+        _offset = 3;
     };
 }
 function decorator2() { }
 function decorator3() { }
 function decorator4(constructor) {
-    if (Array.isArray(constructor.forbiddenSymbols)) {
-        const arr = constructor.forbiddenSymbols;
-        if (!arr.includes('"'))
-            arr.push('"');
-        if (!arr.includes("'"))
-            arr.push("'");
+    class ExtendedPartialMessageEncoder extends constructor {
+        static forbiddenSymbols = ['_', ',', '.', '!', '?', '-', ';', ' ', '"', '\''];
     }
+    return ExtendedPartialMessageEncoder;
 }
 //# sourceMappingURL=decorators.js.map

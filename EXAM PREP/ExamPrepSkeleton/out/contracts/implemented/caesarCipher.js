@@ -21,6 +21,7 @@ let CaesarCipher = class CaesarCipher {
     get language() {
         return this._language;
     }
+    // @decorator2
     encipher(text) {
         let characters = text.split('');
         let setValues = [...this._language.charset.values()];
@@ -31,6 +32,7 @@ let CaesarCipher = class CaesarCipher {
         });
         return encoded.join('');
     }
+    // @decorator3
     decipher(text) {
         let characters = text.split('');
         let setValues = [...this._language.charset.values()];
@@ -44,18 +46,6 @@ let CaesarCipher = class CaesarCipher {
     }
 };
 exports.CaesarCipher = CaesarCipher;
-__decorate([
-    decorators_1.decorator2,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", String)
-], CaesarCipher.prototype, "encipher", null);
-__decorate([
-    decorators_1.decorator3,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", String)
-], CaesarCipher.prototype, "decipher", null);
 exports.CaesarCipher = CaesarCipher = __decorate([
     decorators_1.decorator1,
     __metadata("design:paramtypes", [Object])

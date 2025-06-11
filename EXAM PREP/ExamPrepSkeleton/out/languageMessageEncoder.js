@@ -9,28 +9,28 @@ class LanguageMessageEncoder extends partialMessageEncoder_1.PartialMessageEncod
         super(language, cipher);
     }
     stripForbiddenSymbols(message) {
-        const pattern = new RegExp(`[${partialMessageEncoder_1.PartialMessageEncoder.forbiddenSymbols.map(s => '\\' + s).join('')}]`, 'g');
-        return message.replace(pattern, '');
+        let forbiddenSymbols = partialMessageEncoder_1.PartialMessageEncoder.forbiddenSymbols;
+        forbiddenSymbols.forEach((x) => (message = message.replaceAll(x, "")));
+        return message;
     }
     encodeMessage(secretMessage) {
-        if (typeof secretMessage !== 'string' || secretMessage.length === 0) {
-            return 'No message.';
+        if (typeof secretMessage !== "string" || secretMessage.length === 0) {
+            return "No message.";
         }
         const strippedMsg = this.stripForbiddenSymbols(secretMessage);
         if (!this.language.isCompatibleToCharset(strippedMsg)) {
-            return 'Message not compatible.';
+            return "Message not compatible.";
         }
         const encodedStrippedMessage = this.cipher.encipher(strippedMsg);
         this.numberOfEncodedChars += encodedStrippedMessage.length;
         return encodedStrippedMessage;
     }
     decodeMessage(secretMessage) {
-        if (typeof secretMessage !== 'string' || secretMessage.length === 0) {
-            return 'No message.';
+        if (typeof secretMessage !== "string" || secretMessage.length === 0) {
+            return "No message.";
         }
-        //! Check for later
         if (!this.language.isCompatibleToCharset(secretMessage)) {
-            return 'Message not compatible.';
+            return "Message not compatible.";
         }
         const decodedMessage = this.cipher.decipher(secretMessage);
         this.numberOfDecodedChars += decodedMessage.length;
@@ -42,13 +42,14 @@ class LanguageMessageEncoder extends partialMessageEncoder_1.PartialMessageEncod
             case "Encoded":
                 total += this.numberOfEncodedChars;
                 break;
-            case 'Decoded':
+            case "Decoded":
                 total += this.numberOfDecodedChars;
                 break;
-            case 'Both':
+            case "Both":
                 total += this.numberOfDecodedChars + this.numberOfEncodedChars;
                 break;
-            default: 0;
+            default:
+                0;
         }
         return `Total processed characters count: ${total}`;
     }

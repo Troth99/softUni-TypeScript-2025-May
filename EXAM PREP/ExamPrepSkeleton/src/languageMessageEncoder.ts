@@ -3,76 +3,73 @@ import { PartialMessageEncoder } from "./contracts/implemented/partialMessageEnc
 import { Language } from "./contracts/language";
 import { MessageEncoder } from "./contracts/messageEncoder";
 
+type typeOfCharacters = "Encoded" | "Decoded" | "Both";
 
-type typeOfCharacters = 'Encoded' | 'Decoded' | 'Both'
+export class LanguageMessageEncoder<L extends Language, C extends Cipher<L>>
+  extends PartialMessageEncoder
+  implements MessageEncoder
+{
+  protected numberOfEncodedChars: number = 0;
+  protected numberOfDecodedChars: number = 0;
 
-export class LanguageMessageEncoder<L extends Language, C extends Cipher<L>> extends PartialMessageEncoder implements MessageEncoder{
+  constructor(language: L, cipher: C) {
+    super(language, cipher);
+  }
 
-    protected numberOfEncodedChars: number = 0;
-    protected numberOfDecodedChars: number = 0;
+  protected override stripForbiddenSymbols(message: string) {
+    let forbiddenSymbols = PartialMessageEncoder.forbiddenSymbols;
+    forbiddenSymbols.forEach((x) => (message = message.replaceAll(x, "")));
+    return message;
+  }
 
-    constructor(language: L, cipher: C){
-        super(language, cipher)
-     
+  public encodeMessage(secretMessage: unknown) {
+
+    if (typeof secretMessage !== "string" || secretMessage.length === 0) {
+      return "No message.";
+    }
+    const strippedMsg = this.stripForbiddenSymbols(secretMessage);
+
+    if (!this.language.isCompatibleToCharset(strippedMsg)) {
+      return "Message not compatible.";
     }
 
-    protected override stripForbiddenSymbols(message: string) {
-    const pattern = new RegExp(`[${PartialMessageEncoder.forbiddenSymbols.map(s => '\\' + s).join('')}]`, 'g');
-    return message.replace(pattern, '');
-}
-  
-    public encodeMessage(secretMessage: unknown) {
-      
-        if(typeof secretMessage !== 'string' || secretMessage.length === 0){
-            return 'No message.'
-        }
-        const strippedMsg = this.stripForbiddenSymbols(secretMessage);
-        
-        if(!this.language.isCompatibleToCharset(strippedMsg)){
-            return 'Message not compatible.'
-        }
+    const encodedStrippedMessage = this.cipher.encipher(strippedMsg);
 
-        const encodedStrippedMessage = this.cipher.encipher(strippedMsg)
+    this.numberOfEncodedChars += encodedStrippedMessage.length;
 
-        this.numberOfEncodedChars += encodedStrippedMessage.length
+    return encodedStrippedMessage;
+  }
 
-        return encodedStrippedMessage
- 
-        
+  public decodeMessage(secretMessage: unknown): string {
+    if (typeof secretMessage !== "string" || secretMessage.length === 0) {
+      return "No message.";
     }
 
-    public decodeMessage(secretMessage: unknown): string {
-        if(typeof secretMessage !== 'string' || secretMessage.length === 0){
-            return 'No message.'
-        }
-        
-        if(!this.language.isCompatibleToCharset(secretMessage)){
-            return 'Message not compatible.'
-        }
-        
-        const decodedMessage = this.cipher.decipher(secretMessage)
-        this.numberOfDecodedChars += decodedMessage.length
-
-        return decodedMessage
-      
-     
+    if (!this.language.isCompatibleToCharset(secretMessage)) {
+      return "Message not compatible.";
     }
 
-    public totalProcessedCharacters(type: typeOfCharacters): string {
-        let total = 0
-        switch(type){
-            case "Encoded":
-                total += this.numberOfEncodedChars;
-                break;
-            case 'Decoded':
-                total += this.numberOfDecodedChars;
-                break;
-            case 'Both' :
-                total += this.numberOfDecodedChars + this.numberOfEncodedChars
-            break;
-            default: 0
-        }
-        return `Total processed characters count: ${total}`
-    }
+    const decodedMessage = this.cipher.decipher(secretMessage);
+    this.numberOfDecodedChars += decodedMessage.length;
 
+    return decodedMessage;
+  }
+
+  public totalProcessedCharacters(type: typeOfCharacters): string {
+    let total = 0;
+    switch (type) {
+      case "Encoded":
+        total += this.numberOfEncodedChars;
+        break;
+      case "Decoded":
+        total += this.numberOfDecodedChars;
+        break;
+      case "Both":
+        total += this.numberOfDecodedChars + this.numberOfEncodedChars;
+        break;
+      default:
+        0;
+    }
+    return `Total processed characters count: ${total}`;
+  }
 }
