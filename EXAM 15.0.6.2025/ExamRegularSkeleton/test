@@ -1,0 +1,79 @@
+import { Motel } from "./contracts/motel";
+import { PartialMonthlyMotel } from "./contracts/partialMonthlyMotel";
+import { Room } from "./contracts/room";
+import { SummerMonth, WinterMonth } from "./contracts/util";
+
+export class MonthlyMotel<TMonth extends WinterMonth | SummerMonth> extends PartialMonthlyMotel implements Motel {
+    private bookedRooms: Room[] = [];
+       private bookings: { roomNumber: Room["roomNumber"], month: TMonth }[] = [];
+    private cancellations: { roomNumber: Room["roomNumber"], month: TMonth }[] = [];
+    private allBookings: { roomNumber: Room["roomNumber"], month: TMonth }[] = [];
+
+    constructor() {
+        super();
+    }
+
+  getTotalBudget(): string {
+    let total = 0;
+    for (const booking of this.allBookings) {
+        const room = this.bookedRooms.find(r => r.roomNumber === booking.roomNumber);
+        if (room) total += room.totalPrice;
+    }
+    for (const cancellation of this.cancellations) {
+        const room = this.bookedRooms.find(r => r.roomNumber === cancellation.roomNumber);
+        if (room) total -= room.cancellationPrice;
+    }
+    return `Motel: ${PartialMonthlyMotel.MotelName}
+Total budget: $${total.toFixed(2)}`;
+}
+
+    addRoom(room: unknown): string {
+        if (!isRoom(room)) {
+            return 'Value was not a Room.';
+        }
+        if (this.bookedRooms.some(r => r.roomNumber === room.roomNumber)) {
+            return `Room '${room.roomNumber}' already exists.`;
+        }
+        this.bookedRooms.push(room);
+        return `Room '${room.roomNumber}' added.`;
+    }
+
+    bookRoom(roomNumber: string, bookedMonth: string): string {
+        if (!this.bookedRooms.some(r => r.roomNumber === roomNumber)) {
+            return `Room '${roomNumber}' does not exist.`;
+        }
+
+        if (this.bookings.some(b => b.roomNumber === roomNumber && b.month === bookedMonth)) {
+            return `Room '${roomNumber}' is already booked for '${bookedMonth}'.`;
+        }
+
+        this.bookings.push({ roomNumber['roomnumber']: bookedMonth });
+         this.allBookings.push({ roomNumber, month: bookedMonth });
+        return `Room '${roomNumber}' booked for '${bookedMonth}'.`;
+    }
+
+    cancelBooking(roomNumber: string, bookedMonth: string): string {
+        if (!this.bookedRooms.some(r => r.roomNumber === roomNumber)) {
+            return `Room '${roomNumber}' does not exist.`;
+        }
+        const bookingIndex = this.bookings.findIndex(
+            b => b.roomNumber === roomNumber && b.month === bookedMonth
+        );
+        if (bookingIndex === -1) {
+            return `Room '${roomNumber}' is not booked for '${bookedMonth}'.`;
+        }
+        this.bookings.splice(bookingIndex, 1);
+        this.cancellations.push({ roomNumber, month: bookedMonth });
+        return `Booking cancelled for Room '${roomNumber}' for '${bookedMonth}'.`;
+    }
+}
+
+function isRoom(obj: unknown): obj is Room {
+    return (
+        typeof obj === 'object' &&
+        obj !== null &&
+        'roomNumber' in obj &&
+        'totalPrice' in obj &&
+        'cancellationPrice' in obj
+    );
+}
